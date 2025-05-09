@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+  selector:
+    application: mlops
+    app: nginx  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      application: mlops
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: nginx
+      containers:
+        - image: mlops-nginx:${VERSION}
+          name: nginx
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx
+
+

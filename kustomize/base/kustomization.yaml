@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1 
+kind: Kustomization  
+
+resources:
+  - backend.yaml
+  - nginx.yaml
+  - nginx-config.yaml
+    # - config.yaml
+
+labels:
+  - pairs:
+      application: mlops
+    includeSelectors: true
+
+configMapGenerator:
+  - name: mlops-config
+    files: 
+      - example.env
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

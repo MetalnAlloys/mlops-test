@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+    application: mlops
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+      application: mlops
+  template:
+    metadata:
+      labels:
+        application: mlops
+        app: backend
+    spec:
+      containers:
+        - image: mlops:${VERSION}
+          name: backend
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PYTHONBUFFERED
+              value: "true"
+          envFrom:
+            - configMapRef:
+                name: mlops-config
+      serviceAccountName: backend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backend
+
