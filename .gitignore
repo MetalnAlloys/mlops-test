@@ -1,0 +1,7 @@
+*.sqlite3
+*.pyc
+.ipynb_checkpoints/
+env
+.env
+django.log
+static
