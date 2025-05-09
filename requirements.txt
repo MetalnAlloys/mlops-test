@@ -1,3 +1,8 @@
 scikit-learn
 joblib
 pandas
+Django==5.0.1
+djangorestframework==3.16.0
+django-filter
+gunicorn
+psycopg2-binary
