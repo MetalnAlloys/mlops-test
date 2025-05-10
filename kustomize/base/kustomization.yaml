@@ -14,7 +14,7 @@ labels:
 
 configMapGenerator:
   - name: mlops-config
-    files: 
+    envs: 
       - example.env
 
 generatorOptions:
