@@ -45,34 +45,34 @@ spec:
               name: db-pv
       volumes:
         - name: db-pv
-          emptyDir: {}
-          #persistentVolumeClaim:
-            #claimName: db-pvc
-#---
-#apiVersion: v1
-#kind: PersistentVolume
-#metadata:
-#  name: db
-#spec:
-#  storageClassName: manual
-#  accessModes:
-#    - ReadWriteOnce
-#  capacity:
-#    storage: 256Mi
-#  hostPath:
-#    path: /host/postgresql
-#---
-#apiVersion: v1
-#kind: PersistentVolumeClaim
-#metadata:
-#  name: db-pvc
-#spec:
-#  storageClassName: manual
-#  accessModes:
-#    - ReadWriteOnce
-#  resources:
-#    requests:
-#      storage: 512Mi
+          #emptyDir: {}
+          persistentVolumeClaim:
+            claimName: db-pvc
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 256Mi
+  hostPath:
+    path: /data/postgresql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi
 ---
 apiVersion: v1
 kind: ServiceAccount
