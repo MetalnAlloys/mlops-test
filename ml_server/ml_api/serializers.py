@@ -20,5 +20,4 @@ class RequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Request
         read_only_fields = ("id", "input_data", "response", "created_at", "algorithm")
-        fields = ("id", "input_data", "response", "json_response", "feedback",
-                  "created_at", "algorithm")
+        fields = ("id", "input_data", "response", "created_at", "algorithm")

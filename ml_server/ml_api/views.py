@@ -41,18 +41,13 @@ class PredictView(views.APIView):
 
         prediction = algorithm_object.compute_prediction(request.data)
 
-        label = prediction["prediction_label"] if "prediction_label" in prediction else "error"
-
         ml_request = Request(
             input_data=json.dumps(request.data),
             response=prediction,
-            json_response=label,
-            feedback="",
             algorithm=algs[0],
         )
         ml_request.save()
 
-        # prediction["request_id"] = ml_request.id
         # Set unique request ID 
         prediction["request_id"] = request.META.get('uuid')
         prediction["model_version"] = algorithm_version

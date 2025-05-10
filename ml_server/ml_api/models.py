@@ -40,7 +40,5 @@ class Request(models.Model):
     """
     input_data = models.CharField(max_length=10000)
     response = models.CharField(max_length=10000)
-    json_response = models.CharField(max_length=10000)
-    feedback = models.CharField(max_length=10000, blank=True, null=True)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
