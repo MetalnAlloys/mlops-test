@@ -4,6 +4,7 @@ KUSTOMIZE_DIR="./kustomize"
 
 # Setting these here just for example running of the script. 
 # These env vars should be created separately/secretly 
+# e.g. fetched from a gcloud secret or GCS bucket
 export GOOGLE_ARTIFACTS_REG="a.dev"
 export NAMESPACE="mlops"
 export VERSION="0.0.1"
