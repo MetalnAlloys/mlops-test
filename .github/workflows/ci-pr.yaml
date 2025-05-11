@@ -66,7 +66,10 @@ jobs:
         run: python ml_server/manage.py test
 
       - name: train model
-        run: python3 train.py model_pipeline_test.joblib
+        run: |
+          VERSION="pr${PR_NUMBER}"
+          echo "::set-env name=VERSION::$VERSION"
+          python3 train.py data/iris.csv model-${VERSION}_pipeline.joblib
 
 
   deployment-tests:
@@ -107,8 +110,8 @@ jobs:
       run: |
         set -x
         kubectl config set-context --current --namespace=$NAMESPACE
-        kubectl wait --for=condition=available --timeout=300s deployment/backend
+        kubectl wait --for=condition=available --timeout=100s deployment/backend
         kubectl wait --for=condition=available --timeout=100s deployment/nginx
         kubectl wait --for=condition=available --timeout=100s deployment/grafana
-        kubectl wait --for=condition=available --timeout=100s deployment/prometheus
+        kubectl wait --for=condition=available --timeout=100s deployment/prometheus-server
         kubectl wait --for=condition=available --timeout=100s statefulset/postgres
