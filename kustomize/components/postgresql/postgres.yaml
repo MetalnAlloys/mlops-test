@@ -42,39 +42,25 @@ spec:
                 name: mlops-config
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: db-pv
+              subPath: postgres
+              name: postgres-pv
             - mountPath: /docker-entrypoint-initdb.d
               name: sql-init-mount
       volumes:
-        - name: db-pv
-          #emptyDir: {}
+        - name: postgres-pv
           persistentVolumeClaim:
-            claimName: db-pvc
+            claimName: postgres-pvc
         - name: sql-init-mount
           configMap:
             name: initsql
             items:
               - key: init.sh
                 path: init.sh
-          
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: db
-spec:
-  storageClassName: standard
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 256Mi
-  hostPath:
-    path: /var/lib/postgresql/data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-pvc
+  name: postgres-pvc
 spec:
   storageClassName: standard
   accessModes:
