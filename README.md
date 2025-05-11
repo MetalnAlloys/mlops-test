@@ -70,7 +70,7 @@ Clone the repo and follow these steps;
 
     ```sh
         pip install -r requirements-ml.txt
-        python3 train.py model_pipeline.joblib
+        python3 train.py data/iris.csv model_pipeline.joblib
 
     ```
 
