@@ -10,7 +10,7 @@ KUSTOMIZE_DIR="./kustomize"
 #   These env vars should be created separately/secretly 
 #   e.g. fetched from a GCP secret or a GCS bucket
 #---------------------------------------------------------------
-export GOOGLE_ARTIFACTS_REG="xxx-docker.pkg.dev/project/registry"
+export GOOGLE_ARTIFACTS_REG="europe-west1-docker.pkg.dev/registry/"
 export NAMESPACE="mlops"
 export VERSION="0.0.1"
 export RUN_MODE="dev"
@@ -20,6 +20,7 @@ export MLOPS_DB_NAME="mlops_db"
 export MLOPS_DB_PASS="admin123"
 export MLOPS_DB_USER="mlops_user"
 export MLOPS_DB_HOST="mlops-db"
+export STATIC_FILES_GCS_BUCKET="add-some-gcs-bucket"
 
 
 # -------------------------------------------
@@ -67,7 +68,7 @@ case "$1" in
         ;;
     run)
         kubectl create namespace "$NAMESPACE"
-        kubectl kustomize kustomize/overlays/$RUN_MODE | envsubst | kubectl apply -n "$NAMESPACE" -f-
+        kubectl kustomize kustomize/overlays/$RUN_MODE | envsubst  | kubectl apply -n "$NAMESPACE" -f-
         ;;
     stop)
         kubectl kustomize kustomize/overlays/$RUN_MODE | kubectl delete -n "$NAMESPACE" -f-
