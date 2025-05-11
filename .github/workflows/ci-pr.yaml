@@ -1,13 +1,14 @@
 name: "Continuous Integration - Pull Request"
 
-on: workflow_dispatch
+on: 
+  # workflow_dispatch:
 
-#  pull_request:
-#    branches:
-#      - main
-#    paths-ignore:
-#      - '**/README.md'
-#      - 'kustomize/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+      - 'kustomize/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -18,15 +19,16 @@ jobs:
     runs-on: [self-hosted]
 
     env:
+      POSTGRES_PASSWORD: admin123
       MLOPS_DB_USER: mlops_user
       MLOPS_DB_NAME: mlops_db
+      MLOPS_DB_PASS: admin123
+      MLOPS_DB_HOST: localhost
 
   services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
-          POSTGRES_USER: $MLOPS_DB_USER
-          POSTGRES_DB: $MLOPS_DB_NAME
           POSTGRES_PASSWORD: $POSTGRES_PASSWORD
         ports:
           - 5432:5432
@@ -43,7 +45,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -70,6 +72,8 @@ jobs:
       - name: Run tests
         run: python ml_server/manage.py test
 
+      - name: train model
+        run: python3 train.py model_pipeline_test.joblib
 
 
   deployment-tests:
@@ -97,12 +101,13 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        NAMESPACE: ${PR_NUMBER}
-        PROJECT_ID: $PROJECT_ID
-        PR_CLUSTER: $PR_CLUSTER
-        REGION: $CLUSTER_REGION
-        GOOGLE_ARTIFACTS_REG: $GOOGLE_ARTIFACTS_REG
+        NAMESPACE: ${GITHUB_REF##*/}
+        PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        PR_CLUSTER: ${{ secrets.PR_CLUSTER }}
+        REGION: ${{ services.REGION }}
+        GOOGLE_ARTIFACTS_REG: ${{ secrets.GOOGLE_ARTIFACTS_REG }}
         RUN_MODE: prod
+
 
     - name: Wait For Pods
       timeout-minutes: 20
@@ -111,4 +116,6 @@ jobs:
         kubectl config set-context --current --namespace=$NAMESPACE
         kubectl wait --for=condition=available --timeout=300s deployment/backend
         kubectl wait --for=condition=available --timeout=100s deployment/nginx
+        kubectl wait --for=condition=available --timeout=100s deployment/grafana
+        kubectl wait --for=condition=available --timeout=100s deployment/prometheus
         kubectl wait --for=condition=available --timeout=100s statefulset/postgres
