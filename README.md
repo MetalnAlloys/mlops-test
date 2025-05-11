@@ -24,11 +24,7 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
 
 
 2. Proxy
-- Nginx as a reverse proxy (See `nginx/nginx.conf`).
-- `/prometheus` to Prometheus server
-- `/grafana` to the Grafana dashboard
-- All other requests are proxied to the django backend at port 8000
-
+- Nginx as a reverse proxy for all microservices
 
 
 3. Monitoring/Observability
@@ -40,9 +36,17 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
 4. Model Training
 - A sample Logistic Regression model traing on Python Scikit Iris database
 
+5. Database
+- Postgresql
 
-5. CI/CD Pipeline
+
+6. CI/CD Pipeline
 - `./github/workflows/ci-pr.yaml` to run unit tests, retrain model and test deployment
+
+
+7. Kubernetes based deployment
+- Microservices based.
+- Services: backend, nginx, grafana, prometheus, postgres
 
 
 
