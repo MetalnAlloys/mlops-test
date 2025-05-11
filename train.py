@@ -30,6 +30,8 @@ Note:
     pipeline = Pipeline([('scaler', StandardScaler()),('model', LogisticRegression())])
     pipeline.fit(X_train, y_train)
 
+    print("testing wf")
+
     output_file = sys.argv[1]
     if not os.path.exists(ARTIFACTS_DIR):
         os.makedirs(ARTIFACTS_DIR)
