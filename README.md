@@ -6,7 +6,6 @@ MLOps example Pipeline setup
 ## Pipeline architecture and design
 
 
-
 ### Worklow Cycle
 
 Train ML Model → save to disk → serve as HTTP endpoint → predict
@@ -35,6 +34,7 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
 
 4. Model Training
 - A sample Logistic Regression model traing on Python Scikit Iris database
+
 
 5. Database
 - Postgresql
