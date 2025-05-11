@@ -11,4 +11,4 @@ patches:
 
 components:
   - ../../components/postgresql
-#  - ../../components/container-images-tag
+  #- ../../components/container-images-tag

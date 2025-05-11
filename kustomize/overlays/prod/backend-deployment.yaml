@@ -9,12 +9,9 @@ spec:
         - name: backend
           image: ${GOOGLE_ARTIFACTS_REG}/mlops:${VERSION}
           imagePullPolicy: Always
-          volumeMounts:
-            - name: static-files
-              mountPath: /static
-      volumes:
-        - name: static-files
-          emptyDir: {}
+          env:
+            - name: STATIC_FILES_GCS_BUCKET
+              value: ${STATIC_FILES_GCS_BUCKET}
 
 
 

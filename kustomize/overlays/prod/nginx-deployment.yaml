@@ -9,9 +9,3 @@ spec:
         - name: nginx
           image: ${GOOGLE_ARTIFACTS_REG}/mlops-nginx:${VERSION}
           imagePullPolicy: Always
-          volumeMounts:
-            - name: static-files
-              mountPath: /static
-      volumes:
-        - name: static-files
-          emptyDir: {}
