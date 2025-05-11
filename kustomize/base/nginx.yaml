@@ -30,8 +30,17 @@ spec:
       containers:
         - image: mlops-nginx:${VERSION}
           name: nginx
+          #command: ["nginx-debug", "-g", "daemon off;"]
           ports:
             - containerPort: 80
+    #      volumeMounts:
+    #        - name: nginx
+    #          subPath: nginx.conf
+    #          mountPath: /etc/nginx/nginx.conf
+    #  volumes:
+    #    - name: nginx
+    #      configMap:
+    #        name: nginx-config
 ---
 apiVersion: v1
 kind: ServiceAccount
