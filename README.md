@@ -5,26 +5,30 @@ MLOps example Pipeline setup
 
 ## Pipeline architecture and design
 
-__Worklow Cycle:__
 
-Train ML Model → save to disk → serve as HTTP endpoint → predict 
+
+### Worklow Cycle
+
+Train ML Model → save to disk → serve as HTTP endpoint → predict
 
 
 ### Components
+
 1. Web server
 - Django + DRF (Django Rest Framework) as a backend for serving predictions
 - REST API:
     + `/api/v1/endpoints` list available endpoints
     + `/api/v1/algorithms` list registered algorithms
     + `/api/v1/requests` list all the processed requests
-    + `/api/v1/lor/predict` run a prediction. (lor=logistic regression)
+    + `/api/v1/lor/predict` run a prediction. (_lor=logistic regression_)
 
 
 2. Proxy
-- Nginx as a reverse proxy (See `nginx/nginx.conf`). Proxies the following:
+- Nginx as a reverse proxy (See `nginx/nginx.conf`).
 - `/prometheus` to Prometheus server
 - `/grafana` to the Grafana dashboard
 - All other requests are proxied to the django backend at port 8000
+
 
 
 3. Monitoring/Observability
@@ -51,10 +55,10 @@ In order to run locally, the following binaries are required;
 3. A running Docker daemon
 4. It also requires a small tool called `envsubst` but it is assumed as
    pre-installed on a standard Linux
-5. Python3
+5. Python
 
 
-Clone the repo and follow the steps;
+Clone the repo and follow these steps;
 
 
 ### Step 1: Train the ML model
@@ -142,4 +146,32 @@ Get nginx IP using;
 ```
 
 Navigate to http://$IP
+
+
+
+## Usage
+### Testing the default app
+The deployed app can be tested both using a Browser and cli tools such as curl.
+
+Prediction can be done using the endpoint: `/api/v1/lor/predict` 
+
+It also takes a `version` URI parameter. Available versions for an algorithm can be found by calling the endpoint: `/api/v1/alogirithms`
+
+
+e.g. test using curl
+```bash
+$ cat data.json
+{
+"sepal_length": 5.1,
+"sepal_width": 1.0,
+"petal_length": 1.2,
+"petal_width": 0.2
+}
+
+$ curl --header "Content-Type: application/json" --request POST  --data @data.json  http://localhost/api/v1/lor/predict?version=0.0.1
+
+```
+
+
+You can also call these endpoints using Browser by taking advantange of DRF (django rest framework) graphical interface
 
