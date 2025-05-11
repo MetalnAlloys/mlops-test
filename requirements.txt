@@ -6,3 +6,5 @@ djangorestframework==3.16.0
 django-filter
 gunicorn
 psycopg2-binary
+prometheus-client
+django-prometheus

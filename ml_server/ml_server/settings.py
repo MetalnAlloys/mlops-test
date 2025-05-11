@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+RUN_MODE = os.environ.get('RUN_MODE', 'dev')
 
 # Application definition
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'ml_api.middleware.SetRequestIdMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'ml_server.urls'
@@ -130,3 +133,44 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+if RUN_MODE == "prod":
+    import sys
+    # Setup logging so django logs don't get eaten up by gunicorn server logs
+    # For detailed logs (usually unnecessary), set level to "DEBUG"
+    LOGGING = {
+             "version": 1,
+             "disable_existing_loggers": False,
+             "formatters": {
+                 "verbose": {
+                     "format": "[DJANGO] {levelname} {asctime} {module} {message}",
+                     "style": "{",
+                     },
+                 },
+             "filters": {
+                 "require_debug_true": {
+                     "()": "django.utils.log.RequireDebugTrue",
+                     },
+                 },
+             "handlers": {
+                 "console": {
+                     "level": "INFO",
+                     "class": "logging.StreamHandler",
+                     'stream': sys.stdout,
+                     "formatter": "verbose", 
+                 },
+             },
+            "root": {
+                "handlers": ['console'],
+                "level": 'INFO',
+            },
+             "loggers": {
+                 "django": {
+                     "handlers": ["console"],
+                     "level" : "INFO",
+                     "propagate": True,
+                     },
+                 },
+             }
+

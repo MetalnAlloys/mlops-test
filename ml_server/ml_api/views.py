@@ -2,11 +2,20 @@ import json
 
 from rest_framework import viewsets, mixins, views, status
 from rest_framework.response import Response
+from prometheus_client import Counter, generate_latest
 
 from ml_api.models import Endpoint, Algorithm, Request
 from ml_api.serializers import AlgorithmSerializer, EndpointSerializer, RequestSerializer
 from ml_server.wsgi import registry
 
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from django.http import HttpResponse
+
+
+def metrics_view(request):
+    """Expose Prometheus metrics, including log counters."""
+    metrics = generate_latest()  # Generate all Prometheus metrics
+    return HttpResponse(metrics, content_type=CONTENT_TYPE_LATEST)
 
 
 class EndpointViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -22,7 +31,6 @@ class AlgorithmViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewset
 class RequestViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet, mixins.UpdateModelMixin):
     serializer_class = RequestSerializer
     queryset = Request.objects.all()
-
 
 
 class PredictView(views.APIView):
@@ -54,5 +62,6 @@ class PredictView(views.APIView):
         print(request.META.get('uuid'))
 
         return Response(prediction)
+
 
 
