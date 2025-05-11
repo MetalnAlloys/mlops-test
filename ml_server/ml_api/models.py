@@ -33,8 +33,6 @@ class Request(models.Model):
     Attributes:
         input_data: The input data in JSON format.
         response: The response of the ML algorithm.
-        json_response: The response of the ML algorithm in JSON format.
-        feedback: The feedback about the response in JSON format.
         created_at: The date when request was created.
         algorithm: The reference to MLAlgorithm used to compute response.
     """

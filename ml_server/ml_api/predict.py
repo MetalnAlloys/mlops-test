@@ -8,6 +8,7 @@ from django.conf import settings
 from prometheus_client import Counter, Histogram, generate_latest
 
 ARTIFACTS_DIR = str(os.path.join(settings.BASE_DIR) + "/artifacts")
+PIPELINE = os.environ['PIPELINE']
 LABELS = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
 
 # Prometheus metrics
@@ -17,7 +18,7 @@ PREDICTION_CONFIDENCE = Histogram('model_prediction_confidence', 'Confidence of 
 
 class CreateLogisticRegression:
     def __init__(self):
-        self.pipeline = joblib.load(os.path.join(ARTIFACTS_DIR, "model_pipeline.joblib"))
+        self.pipeline = joblib.load(os.path.join(ARTIFACTS_DIR, PIPELINE))
 
     def preprocessing(self, input_data):
         return pd.DataFrame(input_data, index=[0]).to_numpy()
