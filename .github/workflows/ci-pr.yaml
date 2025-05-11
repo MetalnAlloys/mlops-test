@@ -97,7 +97,7 @@ jobs:
         NAMESPACE: ${GITHUB_REF##*/}
         PROJECT_ID: ${{ secrets.PROJECT_ID }}
         PR_CLUSTER: ${{ secrets.PR_CLUSTER }}
-        REGION: ${{ services.REGION }}
+        REGION: ${{ secrets.REGION }}
         GOOGLE_ARTIFACTS_REG: ${{ secrets.GOOGLE_ARTIFACTS_REG }}
         RUN_MODE: prod
 
