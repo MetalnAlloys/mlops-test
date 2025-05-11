@@ -8,11 +8,11 @@ spec:
       containers:
         - name: nginx
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: app-volume
-              mountPath: /nginx
-      volumes:
-        - name: app-volume
-          hostPath:
-            path: /host/nginx
-            type: Directory
+#          volumeMounts:
+#            - name: app-volume
+#              mountPath: /nginx
+#      volumes:
+#        - name: app-volume
+#          hostPath:
+#            path: /host/nginx
+#            type: Directory

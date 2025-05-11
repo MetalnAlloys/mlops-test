@@ -5,7 +5,6 @@ resources:
   - backend.yaml
   - nginx.yaml
   - nginx-config.yaml
-    # - config.yaml
 
 labels:
   - pairs:
@@ -16,6 +15,10 @@ configMapGenerator:
   - name: mlops-config
     envs: 
       - example.env
+
+components:
+  - ../components/grafana
+  - ../components/prometheus
 
 generatorOptions:
   disableNameSuffixHash: true
