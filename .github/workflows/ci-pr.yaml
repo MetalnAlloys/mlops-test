@@ -1,0 +1,114 @@
+name: "Continuous Integration - Pull Request"
+
+on: workflow_dispatch
+
+#  pull_request:
+#    branches:
+#      - main
+#    paths-ignore:
+#      - '**/README.md'
+#      - 'kustomize/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: [self-hosted]
+
+    env:
+      MLOPS_DB_USER: mlops_user
+      MLOPS_DB_NAME: mlops_db
+
+  services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: $MLOPS_DB_USER
+          POSTGRES_DB: $MLOPS_DB_NAME
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432 -U $MLOPS_DB_USER; do
+            echo "Waiting for DB to come online..."
+            sleep 1
+          done
+
+      - name: Install psql
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client-15
+
+      - name: Run init script for DB
+        run: |
+          bash init-db.sh
+
+      - name: Run migrations
+        run: python ml_server/manage.py migrate
+
+      - name: Run tests
+        run: python ml_server/manage.py test
+
+
+
+  deployment-tests:
+    runs-on: [self-hosted]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Build + Deploy PR images to GKE
+      timeout-minutes: 20
+      run: |
+        VERSION="pr${PR_NUMBER}"
+        echo "::set-env name=VERSION::$VERSION"
+
+        gcloud auth configure-docker $GOOGLE_ARTIFACTS_REG
+        gcloud container clusters get-credentials $PR_CLUSTER --region $REGION --project $PROJECT_ID
+
+        echo Building and release images
+        bash run.sh build
+
+        echo Deploying Model
+        bash run.sh run
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        NAMESPACE: ${PR_NUMBER}
+        PROJECT_ID: $PROJECT_ID
+        PR_CLUSTER: $PR_CLUSTER
+        REGION: $CLUSTER_REGION
+        GOOGLE_ARTIFACTS_REG: $GOOGLE_ARTIFACTS_REG
+        RUN_MODE: prod
+
+    - name: Wait For Pods
+      timeout-minutes: 20
+      run: |
+        set -x
+        kubectl config set-context --current --namespace=$NAMESPACE
+        kubectl wait --for=condition=available --timeout=300s deployment/backend
+        kubectl wait --for=condition=available --timeout=100s deployment/nginx
+        kubectl wait --for=condition=available --timeout=100s statefulset/postgres
