@@ -133,10 +133,16 @@ Thats it! The app should be available at `http://localhost`
 ## How to run in production (prod mode)
 
 In order to deploy to production, make sure the following resources are available;
+Note that this setup is created with GCP and GKE in mind.
+
 1. A GKE cluster accessible through `kubectl`
 2. A Google artifacts registry. Subsitute as __GOOGLE_ARTIFACTS_REG__
 3. A GCS bucket for storing static files. Subsitute as __STATIC_FILES_GCS_BUCKET__
 4. Set __RUN_MODE__ environment variable to `prod`
+5. A GCP service account with at least the following roles:
+    + `roles/container.viewer`
+    + `roles/iam.serviceAccountTokenCreator`
+    + `roles/storage.objectUser`   
 
 
 ### Step 1: Build docker images
@@ -146,6 +152,18 @@ In order to deploy to production, make sure the following resources are availabl
 ### Step 2: Deploy
 - `bash run.sh run`
 
+
+### Step 3: GCP related stuff
+The backend and nginx require access to a GCS bucket which means they should have some permissions granted to them. There are multiple ways to do it, however in this case I have used Workload Identity Federation to impersonate a GCP service account. Note that every Kubernetes service in this project has a Kubernetes service account attached to it. We will let these service accounts impersonate a GCP service account.
+
+- Use the script `impersonate_svc_account.sh` to do this
+- Script usage: `bash impersonate_svc_account.sh <kubernetes service account name> <GCP service account name>`
+        
+   ```bash
+     export NAMESPACE=kubernetes-namespace
+     export GCLOUD_PROJECT_ID=my-gcloud-project-id
+     bash impersonate_svc_account.sh backend gcp-service-account
+   ```
 
 
 Get nginx IP using;
