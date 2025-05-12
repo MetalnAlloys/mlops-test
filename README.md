@@ -185,5 +185,5 @@ $ curl --header "Content-Type: application/json" --request POST  --data @data.js
 ```
 
 
-You can also call these endpoints using Browser by taking advantange of DRF (django rest framework) graphical interface
+You can also call these endpoints using your Browser by taking advantange of DRF (django rest framework) graphical interface. Just navigate to `http://localhost/api/v1/lor/predict?version=0.0.1` and type in the JSON payload. It is a quicker way to visualize all the other endpoints as well.
 
