@@ -102,6 +102,7 @@ Clone the repo and follow these steps;
         'prod'
     + __GOOGLE_ARTIFACTS_REG:__ Online storage for built docker images. Useful
         for 'prod' mode
+    + __PIPELINE:__ Path to the model artifact.
 
 
 ### Step 4: Build docker images
