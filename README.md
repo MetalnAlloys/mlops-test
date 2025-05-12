@@ -14,39 +14,38 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
 ### Components
 
 1. Web server
-- Django + DRF (Django Rest Framework) as a backend for serving predictions
-- REST API:
-    + `/api/v1/endpoints` list available endpoints
-    + `/api/v1/algorithms` list registered algorithms
-    + `/api/v1/requests` list all the processed requests
-    + `/api/v1/lor/predict` run a prediction. (_lor=logistic regression_)
+    - Django + DRF (Django Rest Framework) as a backend for serving predictions
+    - REST API:
+    - `/api/v1/endpoints` list available endpoints
+    - `/api/v1/algorithms` list registered algorithms
+    - `/api/v1/requests` list all the processed requests
+    - `/api/v1/lor/predict` run a prediction. (_lor=logistic regression_)
 
 
 2. Proxy
-- Nginx as a reverse proxy for all microservices
+    - Nginx as a reverse proxy for all microservices
 
 
 3. Monitoring/Observability
-- Prometheus to collect metrics. See `ml_server/ml_api/predict.py` for example
-    usage on defining custom metrics
-- Grafana to set up visual dashboards for metrics
+    - Prometheus to collect metrics. See `ml_server/ml_api/predict.py` for example usage on defining custom metrics
+    - Grafana to set up visual dashboards for metrics
 
 
 4. Model Training
-- A sample Logistic Regression model traing on Python Scikit Iris database
+    - A sample Logistic Regression model traing on Python Scikit Iris database
 
 
 5. Database
-- Postgresql
+    - Postgresql
 
 
-6. CI/CD Pipeline
-- `./github/workflows/ci-pr.yaml` to run unit tests, retrain model and test deployment
+6. CI/CD Pipeline (Untested)
+    - `./github/workflows/ci-pr.yaml` to run unit tests, retrain model and test deployment
 
 
 7. Kubernetes based deployment
-- Microservices based.
-- Services: backend, nginx, grafana, prometheus, postgres
+    - Microservices based.
+    - Services: backend, nginx, grafana, prometheus, postgres
 
 
 
