@@ -32,7 +32,7 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
 
 
 4. Model Training
-    - A sample Logistic Regression model traing on Python Scikit Iris database
+    - A sample Logistic Regression model trained on Python Scikit Iris database. Uses CSV based input
 
 
 5. Database
@@ -66,6 +66,7 @@ Clone the repo and follow these steps;
 
 ### Step 1: Train the ML model
 - Install required dependencies and run the script `train.py`
+- Check `python3 train.py --help` for more info
 
     ```sh
         pip install -r requirements-ml.txt
