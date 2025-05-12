@@ -125,6 +125,10 @@ Clone the repo and follow these steps;
 Thats it! The app should be available at `http://localhost`
 
 
+### Steo 6: Undeploy
+- Run `bash run.sh stop` to delete deployment
+
+
 
 ## How to run in production (prod mode)
 
@@ -152,6 +156,9 @@ Get nginx IP using;
 
 Navigate to http://$IP
 
+
+### Steo 2: Undeploy
+- Run `bash run.sh stop` to delete deployment
 
 
 ## Usage
