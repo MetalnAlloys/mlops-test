@@ -20,6 +20,9 @@ Train ML Model → save to disk → serve as HTTP endpoint → predict
     - `/api/v1/algorithms` list registered algorithms
     - `/api/v1/requests` list all the processed requests
     - `/api/v1/lor/predict` run a prediction. (_lor=logistic regression_)
+    - `/grafana` for grafana GUI
+    - `/prometheus` for prometheus Web UI
+    - `/metrics` to list all the collected metrics
 
 
 2. Proxy
